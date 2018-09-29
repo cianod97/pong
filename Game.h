@@ -1,6 +1,13 @@
 #pragma once
 #include <SDL2/SDL.h>
 
+// 2D vector struct
+struct Vector2D
+{
+    float x;
+    float y;
+};
+
 class Game
 {
 public:
@@ -21,5 +28,8 @@ private:
     SDL_Renderer * mRenderer;
     SDL_Window * mWindow;
     bool mIsRunning;
+
+    Vector2D mPaddlePos;
+    Vector2D mBallPos;
 };
 

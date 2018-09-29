@@ -1,9 +1,12 @@
 #include "Game.h"
 
+const int thickness = 15;
+
 Game::Game():
     mRenderer(nullptr),
     mWindow(nullptr),
-    mIsRunning(true)
+    mIsRunning(true),
+	mPaddlePos()
     {}
 
 bool Game::Initialise()
@@ -42,6 +45,12 @@ bool Game::Initialise()
         SDL_Log("Failed to create renderer: %s", SDL_GetError());
         return false;
     }
+
+	// Can't initialise in constructor so initialise here
+	mPaddlePos.x = 10.0f;
+	mPaddlePos.y = 728.0f/2.0f;
+	mBallPos.x = 1024.0f/2.0f;
+	mBallPos.y = 728.0f/2.0f;
 
     return true;
 }
@@ -89,10 +98,33 @@ void Game::GenerateOutput()
     SDL_SetRenderDrawColor(
         mRenderer,
         0,      //R
-        0,      //G
-        255,    //B
+        128,      //G
+        128,    //B
         255		//A
-    )
+    );
+
+	SDL_RenderClear(mRenderer);
+
+	// Draw entire game scene here
+	SDL_SetRenderDrawColor(
+		mRenderer,
+		255,
+		255,
+		255,
+		255
+	);
+
+	// Create and draw top wall
+	SDL_Rect wall{
+		0,			// Top left x
+		0,			// Top left y
+		1024,		// Width
+		thickness	// Height
+	};
+
+	SDL_RenderFillRect(mRenderer, &wall);
+
+	SDL_RenderPresent(mRenderer);
 }
 
 void Game::Shutdown()
