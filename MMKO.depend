@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1537479672 source:c:\users\cian\documents\programming\mmko\main.cpp
+	"Game.h"
+
+1537482348 source:c:\users\cian\documents\programming\mmko\game.cpp
+	"Game.h"
+
+1537482008 c:\users\cian\documents\programming\mmko\game.h
+	<SDL2/SDL.h>
+
