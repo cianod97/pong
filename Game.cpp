@@ -133,6 +133,40 @@ void Game::UpdateGame()
         }
     }
 
+    mBallPos.x += mBallVel.x * DeltaTime; 
+    mBallPos.y += mBallVel.y * DeltaTime;
+
+    // To calculate the absolute difference between the ball and paddle y coordinate
+    float diff = mBallPos.y - mPaddlePos.y;
+
+    diff = (diff > 0.0f)?diff:-diff;
+
+    if( 
+        diff <= paddleH / 2.0f &&
+        mBallPos.x <= 25.0f && mBallPos.x >= 20.0f &&
+        mBallVel.x < 0.0f 
+        )
+    {
+        mBallVel.x *= -1;
+    }
+    else if(mBallPos.x < 0.0f)
+    {
+        mIsRunning = false;
+    }
+    else if( (1024.0f - mBallPos.x) <= thickness && mBallVel.x > 0.0f )
+    {
+        mBallVel.x *= -1;
+    }
+
+    // Did ball collide with bottom wall?
+    if( ( 768.0f - mBallPos.y ) <= thickness && mBallVel.y > 0.0f)
+    {
+        mBallVel.y *= -1;
+    }
+    else if( (mBallPos.y <= thickness) && mBallVel.y < 0.0f )
+    {
+        mBallVel.y *= -1;
+    }
 }
 
 void Game::GenerateOutput()
