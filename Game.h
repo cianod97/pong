@@ -31,6 +31,8 @@ private:
 
     Vector2D mPaddlePos;
     Vector2D mBallPos;
+    int mPaddleDir;
+
     Uint32 mTicksCount;
 };
 

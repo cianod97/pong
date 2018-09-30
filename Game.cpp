@@ -7,7 +7,8 @@ Game::Game():
     mRenderer(nullptr),
     mWindow(nullptr),
     mIsRunning(true),
-	mTicksCount(0);
+    mPaddleDir(0),
+    mTicksCount(0)
     {}
 
 bool Game::Initialise()
@@ -87,10 +88,33 @@ void Game::ProcessInput()
     {
         mIsRunning = false;
     }
+
+    // To determine direction of paddle
+    mPaddleDir = 0;
+    if(state[SDL_SCANCODE_UP])
+    {
+        mPaddleDir -= 1;
+    }
+    if(state[SDL_SCANCODE_DOWN])
+    {
+        mPaddleDir += 1;
+    }
 }
 
 void Game::UpdateGame()
 {
+    while( !SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16) );
+    // Delta time is diff in ticks from last frame
+    // (converted into seconds)
+    float DeltaTime = (SDL_GetTicks() - mTicksCount)/1000.0f;
+    
+    // Clamp maximum value of DeltaTime
+    if(DeltaTime > 0.05f)
+        DeltaTime = 0.05f;
+    
+    // Update ticks count for next frame
+    mTicksCount = SDL_GetTicks();
+
 
 }
 
