@@ -1,5 +1,5 @@
 CXX:=clang++
-CXXFLAGS:=-Wall -Wextra
+CXXFLAGS:=-Wall
 LDFLAGS:=-lSDL2
 SOURCES:=$(wildcard *.cpp)
 OBJS:=$(SOURCES:.cpp=.o)

@@ -1,6 +1,7 @@
 #include "Game.h"
 
 const int thickness = 15;
+const int paddleH = 150.0f;
 
 Game::Game():
     mRenderer(nullptr),
@@ -123,6 +124,37 @@ void Game::GenerateOutput()
 	};
 
 	SDL_RenderFillRect(mRenderer, &wall);
+
+    // Draw bottom wall
+    wall.y = 768 - thickness;
+
+    SDL_RenderFillRect(mRenderer, &wall);
+
+    // Draw RHS wall
+    wall.y = 0;
+    wall.x = 1024 - thickness;
+    wall.w = thickness;
+    wall.h = 1024;
+
+    SDL_RenderFillRect(mRenderer, &wall);
+
+    SDL_Rect ball{
+		static_cast<int>(mBallPos.x - thickness/2),			// Top left x
+		static_cast<int>(mBallPos.y - thickness/2),			// Top left y
+		thickness,		// Width
+		thickness	// Height
+	};
+
+    SDL_RenderFillRect(mRenderer, &ball);
+
+    SDL_Rect paddle{
+        static_cast<int>(mPaddlePos.x),
+        static_cast<int>(mPaddlePos.y - paddleH/2.0f),
+        thickness,
+        static_cast<int>(paddleH)
+    };
+
+    SDL_RenderFillRect(mRenderer, &paddle);
 
 	SDL_RenderPresent(mRenderer);
 }
