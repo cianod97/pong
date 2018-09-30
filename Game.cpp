@@ -7,7 +7,7 @@ Game::Game():
     mRenderer(nullptr),
     mWindow(nullptr),
     mIsRunning(true),
-	mPaddlePos()
+	mTicksCount(0);
     {}
 
 bool Game::Initialise()
