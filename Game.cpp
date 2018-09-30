@@ -53,6 +53,8 @@ bool Game::Initialise()
 	mPaddlePos.y = 728.0f/2.0f;
 	mBallPos.x = 1024.0f/2.0f;
 	mBallPos.y = 728.0f/2.0f;
+    mBallVel.x = -200.0f;
+    mBallVel.y = 235.0f;
 
     return true;
 }
@@ -90,6 +92,8 @@ void Game::ProcessInput()
     }
 
     // To determine direction of paddle
+    // Add and subtract from mPaddleDir to ensure that direction is zero
+    // if both buttons are pressed
     mPaddleDir = 0;
     if(state[SDL_SCANCODE_UP])
     {
@@ -115,6 +119,19 @@ void Game::UpdateGame()
     // Update ticks count for next frame
     mTicksCount = SDL_GetTicks();
 
+    if(mPaddleDir != 0)
+    {
+        mPaddlePos.y += mPaddleDir * 300.0f * DeltaTime;
+
+        if(mPaddlePos.y < (paddleH/2.0f + thickness))
+        {
+            mPaddlePos.y = paddleH/2.0f + thickness;
+        }
+        else if(mPaddlePos.y >  ((768.0f - (paddleH/2.0f + thickness))))
+        {
+            mPaddlePos.y = (768.0f - (paddleH/2.0f + thickness));
+        }
+    }
 
 }
 
