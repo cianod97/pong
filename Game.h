@@ -29,10 +29,13 @@ private:
     SDL_Window * mWindow;
     bool mIsRunning;
 
+    //Added additional member variables for two player game
     Vector2D mPaddlePos;
+    Vector2D mPaddlePos2;
     Vector2D mBallPos;
     Vector2D mBallVel;
     int mPaddleDir;
+    int mPaddleDir2;
 
     Uint32 mTicksCount;
 };

@@ -8,6 +8,7 @@ Game::Game():
     mWindow(nullptr),
     mIsRunning(true),
     mPaddleDir(0),
+    mPaddleDir2(0),
     mTicksCount(0)
     {}
 
@@ -51,6 +52,9 @@ bool Game::Initialise()
 	// Can't initialise in constructor so initialise here
 	mPaddlePos.x = 10.0f;
 	mPaddlePos.y = 728.0f/2.0f;
+    mPaddlePos2.x = 1024.0f - 25.0f;
+	mPaddlePos2.y = 728.0f/2.0f;
+
 	mBallPos.x = 1024.0f/2.0f;
 	mBallPos.y = 728.0f/2.0f;
     mBallVel.x = -200.0f;
@@ -103,6 +107,16 @@ void Game::ProcessInput()
     {
         mPaddleDir += 1;
     }
+
+    mPaddleDir2 = 0;
+    if(state[SDL_SCANCODE_W])
+    {
+        mPaddleDir2 -= 1;
+    }
+    if(state[SDL_SCANCODE_S])
+    {
+        mPaddleDir2 += 1;
+    }
 }
 
 void Game::UpdateGame()
@@ -133,16 +147,32 @@ void Game::UpdateGame()
         }
     }
 
+    if(mPaddleDir2 != 0)
+    {
+        mPaddlePos2.y += mPaddleDir2 * 300.0f * DeltaTime;
+
+        if(mPaddlePos2.y < (paddleH/2.0f + thickness))
+        {
+            mPaddlePos2.y = paddleH/2.0f + thickness;
+        }
+        else if(mPaddlePos2.y >  ((768.0f - (paddleH/2.0f + thickness))))
+        {
+            mPaddlePos2.y = (768.0f - (paddleH/2.0f + thickness));
+        }
+    }
+
     mBallPos.x += mBallVel.x * DeltaTime; 
     mBallPos.y += mBallVel.y * DeltaTime;
 
     // To calculate the absolute difference between the ball and paddle y coordinate
-    float diff = mBallPos.y - mPaddlePos.y;
+    float diffL = mBallPos.y - mPaddlePos.y;
+    float diffR = mBallPos.y - mPaddlePos2.y;
 
-    diff = (diff > 0.0f)?diff:-diff;
+    diffL = (diffL > 0.0f)?diffL:-diffL;
+    diffR = (diffR > 0.0f)?diffR:-diffR;
 
     if( 
-        diff <= paddleH / 2.0f &&
+        diffL <= paddleH / 2.0f &&
         mBallPos.x <= 25.0f && mBallPos.x >= 20.0f &&
         mBallVel.x < 0.0f 
         )
@@ -153,9 +183,17 @@ void Game::UpdateGame()
     {
         mIsRunning = false;
     }
-    else if( (1024.0f - mBallPos.x) <= thickness && mBallVel.x > 0.0f )
+    else if( 
+        diffR <= paddleH / 2.0f &&
+        mBallPos.x <= 1024.0f - 20.0f && mBallPos.x >= 1024.0f - 25.0f &&
+        mBallVel.x > 0.0f
+        )
     {
         mBallVel.x *= -1;
+    }
+    else if(mBallPos.x > 1024.0f)
+    {
+        mIsRunning = false;
     }
 
     // Did ball collide with bottom wall?
@@ -205,6 +243,7 @@ void Game::GenerateOutput()
 
     SDL_RenderFillRect(mRenderer, &wall);
 
+    /* No RHS wall in two player version
     // Draw RHS wall
     wall.y = 0;
     wall.x = 1024 - thickness;
@@ -212,6 +251,7 @@ void Game::GenerateOutput()
     wall.h = 1024;
 
     SDL_RenderFillRect(mRenderer, &wall);
+    */
 
     SDL_Rect ball{
 		static_cast<int>(mBallPos.x - thickness/2),			// Top left x
@@ -228,6 +268,14 @@ void Game::GenerateOutput()
         thickness,
         static_cast<int>(paddleH)
     };
+
+    SDL_RenderFillRect(mRenderer, &paddle);
+
+    //Adjust values of paddle to LHS paddle
+    paddle.x = static_cast<int>(mPaddlePos2.x);
+    paddle.y = static_cast<int>(mPaddlePos2.y);
+    paddle.w = thickness;
+    paddle.h = paddleH;
 
     SDL_RenderFillRect(mRenderer, &paddle);
 
